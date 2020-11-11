@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Yarn Build
+      - name: NPM Build
         run: |
-          yarn install
-          yarn prod
+          npm install
+          npm run dev
           cat public/mix-manifest.json # See asset versions in log
       - name: Upload build files
         uses: actions/upload-artifact@v1
