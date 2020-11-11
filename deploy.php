@@ -5,7 +5,7 @@ namespace Deployer;
 require 'recipe/laravel.php';
 require 'recipe/rsync.php';
 
-set('application', 'My App');
+set('application', 'Rotada');
 set('ssh_multiplexing', true);
 
 set('rsync_src', function () {
