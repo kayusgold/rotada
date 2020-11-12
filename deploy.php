@@ -28,11 +28,11 @@ add('writable_dirs', []);
 host('eazibank.ml')
     ->user('eazibank')
     ->port(22)
-    ->stage('production')
     #->identityFile('C:/Users/Loveycom/.ssh/id_rsa')
     ->addSshOption('UserKnownHostsFile', '/dev/null')
     ->addSshOption('StrictHostKeyChecking', 'no')
     ->set('deploy_path', '/public_html');
+
 
 // Tasks
 
