@@ -27,6 +27,7 @@ add('writable_dirs', []);
 
 host('eazibank.ml')
     ->user('eazibank')
+    ->stage('production')
     ->port(22)
     #->identityFile('C:/Users/Loveycom/.ssh/id_rsa')
     ->addSshOption('UserKnownHostsFile', '/dev/null')
