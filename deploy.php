@@ -3,47 +3,65 @@
 namespace Deployer;
 
 require 'recipe/laravel.php';
+require 'recipe/rsync.php';
 
-// Project name
-set('application', 'my_project');
+set('application', 'Rotada');
+set('ssh_multiplexing', true);
 
-// Project repository
-set('repository', 'git@github.com:kayusgold/rotada.git');
-
-// [Optional] Allocate tty for git clone. Default value is false.
-set('git_tty', false);
-
-set('ssh_multiplexing', false);
-
-// Shared files/dirs between deploys 
-add('shared_files', []);
-add('shared_dirs', []);
-
-// Writable dirs by web server 
-add('writable_dirs', []);
-
-
-// Hosts
-
-host('eazibank.ml')
-    ->user('eazibank')
-    ->stage('production')
-    ->port(22)
-    #->identityFile('C:/Users/Loveycom/.ssh/id_rsa')
-    ->addSshOption('UserKnownHostsFile', '/dev/null')
-    ->addSshOption('StrictHostKeyChecking', 'no')
-    ->set('deploy_path', '/public_html');
-
-
-// Tasks
-
-task('build', function () {
-    run('cd {{release_path}} && build');
+set('rsync_src', function () {
+    return __DIR__;
 });
 
-// [Optional] if deploy fails automatically unlock.
+
+add('rsync', [
+    'exclude' => [
+        '.git',
+        '/.env',
+        '/storage/',
+        '/vendor/',
+        '/node_modules/',
+        '.github',
+        'deploy.php',
+    ],
+]);
+
+task('deploy:secrets', function () {
+    file_put_contents(__DIR__ . '/.env', getenv('DOT_ENV'));
+    upload('.env', get('deploy_path') . '/shared');
+});
+
+host('eazibank.ml')
+  ->hostname('162.0.233.202')
+  ->stage('production')
+  ->user('eazibank')
+  ->set('deploy_path', '~/public_html');
+
+host('sandbox.eazibank.ml')
+  ->hostname('162.0.233.202')
+  ->stage('staging')
+  ->user('root')
+  ->set('deploy_path', '~/public_html');
+
 after('deploy:failed', 'deploy:unlock');
 
-// Migrate database before symlink new release.
+desc('Deploy the application');
 
-//before('deploy:symlink', 'artisan:migrate');
+task('deploy', [
+    'deploy:info',
+    'deploy:prepare',
+    'deploy:lock',
+    'deploy:release',
+    'rsync',
+    'deploy:secrets',
+    'deploy:shared',
+    'deploy:vendors',
+    'deploy:writable',
+    'artisan:storage:link',
+    'artisan:view:cache',
+    'artisan:config:cache',
+    'artisan:migrate',
+    'artisan:queue:restart',
+    'deploy:symlink',
+    'deploy:unlock',
+    'cleanup',
+]);
