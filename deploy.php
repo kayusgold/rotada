@@ -61,7 +61,7 @@ task('deploy', [
     'artisan:config:cache',
     'artisan:migrate',
     'artisan:queue:restart',
-    'artisan:passport:install',
+    #'artisan:passport:install',
     'deploy:symlink',
     'deploy:unlock',
     'cleanup',
