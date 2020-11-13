@@ -61,14 +61,7 @@ task('deploy', [
     'artisan:config:cache',
     'artisan:migrate',
     'artisan:queue:restart',
-    #'artisan:passport:install',
-    #'deploy:symlink',
-    'deploy:copy:cp -R ~/public_html ~/public_html/current',
+    'deploy:symlink',
     'deploy:unlock',
     'cleanup',
 ]);
-
-// task('deploy:update_code', function () {
-//     upload('.', '~/public_html');
-// });
-//task('deploy:copy', 'cp -R ~/public_html ~/public_html/current');
