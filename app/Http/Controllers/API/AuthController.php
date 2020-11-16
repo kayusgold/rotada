@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Http\Resources\UserResource;
 use App\Models\User;
@@ -38,6 +39,7 @@ class AuthController extends BaseController
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
         $success['token'] = $user->createToken('MyApp')->accessToken;
+        $success['renewal_token'] = "abcxx";
         $success['name'] = $user->name;
 
         return $this->sendResponse($success, 'User register successfully.');
@@ -56,7 +58,7 @@ class AuthController extends BaseController
             $token = $user->createToken('MyApp')->accessToken;
             $user = $user->toArray();
             $user['access_token'] = $token;
-            $user['renewal_token'] = "";
+            $user['renewal_token'] = "abcxx";
 
             return $this->sendResponse(new UserResource((object)$user), 'User login successfully.');
         } else {
